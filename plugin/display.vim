@@ -1,7 +1,6 @@
-
-" Display unprintable characters with '^' and
-" set nolist to disable or set list!
-set list     
+"if exists("g:ListChars")
+   "finish
+"endif
 
 " show tab and trailing spaces
 " Ctrl+v, u, unicode hex code
@@ -27,22 +26,19 @@ set list
 " " 21A9 ↩
 " " 23CE ⏎ (return symbol)
 " " 00AC ¬ (TextMate style)
-"
-"
-"
-" " Working with <Tab>s?
-" " tabstop == softtabstop
-" "
-" " Working with spaces?
-" " softtabstop == shiftwidth
-" Hide/display invisible characters
-let g:current_listchar = 0
-"\"trail:·,tab:→\ ,eol:↲,precedes:<,extends:>", 
 
+" Hide/display invisible characters
+let b:current_listchar = 0
+"\"trail:·,tab:→\ ,eol:↲,precedes:<,extends:>", 
+        "  d sds         
 let g:listchar_formats=[ 
-   \"trail:·"
+   \"trail:·",
+   \"tab:»·,eol:↲,nbsp:␣,extends:…,space:␣,precedes:<,extends:>,trail:·",
+   \"tab:»·,nbsp:↲,trail:↲"
    \]
 
+"trail:·,extends:❯,precedes:❮,n
+" Vimscript lists are zero-indexed
 " could use pyfile to write that plugin in python
 " lists are 0 indexed
 function! ToggleInvisibleChar()
@@ -50,22 +46,18 @@ function! ToggleInvisibleChar()
 
    let l:len = len(g:listchar_formats)
 
-   "echo l:listchar_formats[g:current_listchar]
+   "echom "Current=" . b:current_listchar . "with length" . l:len
+   let b:current_listchar = b:current_listchar + 1
+   "echo l:listchar_formats[b:current_listchar]
 
-   if g:current_listchar >= l:len 
+   if b:current_listchar >= l:len
       set nolist
-      let g:current_listchar = 0
-      return
+      let b:current_listchar = -1
    else
-      "elseif g:current_listchar > l:len
-      let g:current_listchar = g:current_listchar + 1
+      "echom "index=".b:current_listchar." format=".g:listchar_formats[b:current_listchar]
+      set list
+      execute "set listchars=".g:listchar_formats[b:current_listchar]
    endif
-   echo g:current_listchar
-
-   set listchars=g:listchar_formats[g:current_listchar]
-   "set listchars="trail:·"
-   set list
-
 endfunction
 
 
