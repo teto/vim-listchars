@@ -1,6 +1,13 @@
-"if exists("g:ListChars")
-   "finish
-"endif
+" Vim global plugin for cycling through nolist/list/different listchars
+" configurations
+" Last Change:	February 2016
+" Maintainer:	Matthieu Coudron
+" License:	This file is placed in the public domain
+scriptencoding utf8
+
+if exists("ToggleInvisibleChar")
+   finish
+endif
 
 " show tab and trailing spaces
 " Ctrl+v, u, unicode hex code
@@ -27,8 +34,9 @@
 " " 23CE ⏎ (return symbol)
 " " 00AC ¬ (TextMate style)
 
-" Hide/display invisible characters
-let b:current_listchar = 0
+let g:current_listchar_id = 0
+
+
 "\"trail:·,tab:→\ ,eol:↲,precedes:<,extends:>", 
         "  d sds         
 let g:listchar_formats=[ 
@@ -37,30 +45,27 @@ let g:listchar_formats=[
    \"tab:»·,nbsp:↲,trail:↲"
    \]
 
-"trail:·,extends:❯,precedes:❮,n
-" Vimscript lists are zero-indexed
-" could use pyfile to write that plugin in python
 " lists are 0 indexed
 function! ToggleInvisibleChar()
-   " l => local to the function
 
+   " l => local to the function
    let l:len = len(g:listchar_formats)
 
-   "echom "Current=" . b:current_listchar . "with length" . l:len
-   let b:current_listchar = b:current_listchar + 1
-   "echo l:listchar_formats[b:current_listchar]
+   "echom "Current=" . g:current_listchar_id . "with length" . l:len
+   let g:current_listchar_id += 1
 
-   if b:current_listchar >= l:len
+   if g:current_listchar_id >= l:len
       set nolist
-      let b:current_listchar = -1
+      let g:current_listchar_id = -1
    else
-      "echom "index=".b:current_listchar." format=".g:listchar_formats[b:current_listchar]
+      "echom "index=".g:current_listchar_id." format=".g:listchar_formats[g:current_listchar_id]
+      " list is local to window while listchars is global
       set list
-      execute "set listchars=".g:listchar_formats[b:current_listchar]
+      execute "set listchars=".g:listchar_formats[g:current_listchar_id]
    endif
 endfunction
 
 
 command! ToggleListchars call ToggleInvisibleChar()
-noremap <silent> <Plug>(ToggleListchars) :ToggleListchars<CR>
+map <silent> <Plug>(ToggleListchars) :ToggleListchars<CR>
 
